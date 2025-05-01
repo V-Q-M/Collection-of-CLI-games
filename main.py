@@ -1,5 +1,19 @@
 import random
 import duckdb
+import os
+import platform
+
+
+def clear_screen():
+    system_name = platform.system()
+
+    if system_name == 'Windows':
+        os.system('cls')
+    elif system_name in ('Linux', 'Darwin'):
+        if 'TERM' in os.environ:
+            os.system('clear')
+        else:
+            print("\n" * 100)  # Fallback
 
 
 
@@ -48,6 +62,7 @@ def gameLoop(hiddenNumber):
             print("Somethings off. Hmm maybe bug?")
 
 # Iniate game
+clear_screen()
 gameLoop(random.randint(1, 100))
 
 # Main loop
@@ -56,6 +71,7 @@ while running:
     if continuePrompt == 'no':
         running = False
     elif continuePrompt == 'yes':
+        clear_screen()
         gameLoop(random.randint(1, 100))
     elif continuePrompt == 'stats':
         # Print header with Unicode box-drawing characters
