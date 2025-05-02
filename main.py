@@ -3,7 +3,8 @@ import time
 import duckdb
 
 from utils import helpers
-from games import number_guesser
+from utils.helpers import conn
+from games import number_guesser, tic_tac_toe
 
 
 # Controls the gamestate
@@ -24,7 +25,9 @@ while running:
         time.sleep(2)
         number_guesser.startGame()
     elif(answer == "2"): # Tic tac toe
-        continue
+        print("Starting \"Tic Tac Toe \"")
+        time.sleep(2)
+        tic_tac_toe.startGame()
     elif(answer == "3"): #
         continue
     elif(answer == "4"): #

@@ -30,8 +30,8 @@ conn.execute("""
 # TicTacToe table
 conn.execute(""" 
             CREATE TABLE IF NOT EXISTS tictactoeStats (
-                game int PRIMARY KEY DEFAULT nextval('inc'),
-                outcome boolean
+                rounds int PRIMARY KEY DEFAULT nextval('inc'),
+                winner text NOT NULL
                 ); 
             """)
 running = True

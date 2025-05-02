@@ -1,5 +1,4 @@
 import random
-import duckdb
 
 from utils import helpers
 from utils.helpers import conn
