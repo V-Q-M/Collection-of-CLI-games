@@ -1,5 +1,6 @@
+import os
 import random
-import time
+import sys
 
 from utils import helpers
 from utils.helpers import conn
@@ -12,7 +13,13 @@ running = True
 # print("\033[34mThis is blue text\033[0m")
 # print("\033[35mThis is magenta text\033[0m")
 # print("\033[36mThis is cyan text\033[0m")
-with open("assets/word_list.txt", "r") as file:
+
+def resource_path(relative_path):
+    # Get absolute path to resource
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+with open(resource_path("assets/word_list.txt"), "r") as file:
     word_list = [line.strip() for line in file if line.strip()]
 
 word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
@@ -26,7 +33,7 @@ word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
 def pickWord():
     global word_list
     global word
-    with open("assets/word_list.txt", "r") as file:
+    with open(resource_path("assets/word_list.txt"), "r") as file:
         word_list = [line.strip() for line in file if line.strip()]
 
     word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
