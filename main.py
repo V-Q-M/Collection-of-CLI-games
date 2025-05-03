@@ -1,6 +1,6 @@
 import random
 import time
-import duckdb
+# import duckdb
 
 from utils import helpers
 from utils.helpers import conn

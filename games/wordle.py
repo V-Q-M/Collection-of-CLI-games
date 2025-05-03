@@ -15,15 +15,31 @@ running = True
 with open("assets/word_list.txt", "r") as file:
     word_list = [line.strip() for line in file if line.strip()]
 
-
-hiddenWord = word_list[random.randint(0, len(word_list) - 1)]
-
 word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
         [' ', ' ', ' ', ' ', ' '],  # Row 1
         [' ', ' ', ' ', ' ', ' '],  # Row 2
         [' ', ' ', ' ', ' ', ' '],  # Row 3
         [' ', ' ', ' ', ' ', ' '],  # Row 4
         [' ', ' ', ' ', ' ', ' ']]  # Row 5
+
+
+def pickWord():
+    global word_list
+    global word
+    with open("assets/word_list.txt", "r") as file:
+        word_list = [line.strip() for line in file if line.strip()]
+
+    word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
+            [' ', ' ', ' ', ' ', ' '],  # Row 1
+            [' ', ' ', ' ', ' ', ' '],  # Row 2
+            [' ', ' ', ' ', ' ', ' '],  # Row 3
+            [' ', ' ', ' ', ' ', ' '],  # Row 4
+            [' ', ' ', ' ', ' ', ' ']]  # Row 5
+
+
+hiddenWord = word_list[random.randint(0, len(word_list) - 1)]
+
+
 
 def print_box():
     print("┌─────┬─────┬─────┬─────┬─────┐")
@@ -61,18 +77,22 @@ def gameLoop():
                 helpers.clear_screen()
                 print_box()
             else:
+                helpers.clear_screen()
                 print_box()
                 print("Word not recognized. Try again.")
             if(userGuess == hiddenWord): # Check if player won
                 print("You won! Congratulations!")
+                i = 0
                 conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", (i,))
                 break
             elif(i == 6):
                 print("Whoops. You lost!")
                 print("The word was: " + f"\033[31m{hiddenWord}\033[0m")
+                i = 0
                 conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", ("lost",))
                 break
         else:
+            helpers.clear_screen()
             print_box()
             print("Invalid Input. Try again.")
 
@@ -92,6 +112,7 @@ def startGame():
         if continuePrompt == 'no':
             running = False
         elif continuePrompt == 'yes':
+            pickWord()
             gameLoop()
         elif continuePrompt == 'stats':
             # Print header with Unicode box-drawing characters
