@@ -29,7 +29,7 @@ while running:
         time.sleep(2)
         tic_tac_toe.startGame()
     elif(answer == "3"): # Wordle
-        print("\nStarting \"Worlde\"")
+        print("\nStarting \"Wordle\"")
         time.sleep(2)
         wordle.startGame()
     elif(answer == "4"): #

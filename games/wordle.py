@@ -1,6 +1,5 @@
-import os
 import random
-import sys
+import time
 
 from utils import helpers
 from utils.helpers import conn
@@ -14,12 +13,7 @@ running = True
 # print("\033[35mThis is magenta text\033[0m")
 # print("\033[36mThis is cyan text\033[0m")
 
-def resource_path(relative_path):
-    # Get absolute path to resource
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
-
-with open(resource_path("assets/word_list.txt"), "r") as file:
+with open("assets/word_list.txt", "r") as file:
     word_list = [line.strip() for line in file if line.strip()]
 
 word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
@@ -33,7 +27,7 @@ word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
 def pickWord():
     global word_list
     global word
-    with open(resource_path("assets/word_list.txt"), "r") as file:
+    with open("assets/word_list.txt", "r") as file:
         word_list = [line.strip() for line in file if line.strip()]
 
     word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
@@ -112,6 +106,7 @@ def gameLoop():
 def startGame():
     global running
     running = True
+    pickWord()
     gameLoop()
     # Menu loop
     while running:
