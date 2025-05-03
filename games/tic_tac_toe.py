@@ -54,7 +54,8 @@ def gameLoop():
     while (gameOver == False and running):
         print_board(fields)
         # Players move
-        userInput(fields)
+        if (userInput(fields) == False):
+            break
         print_board(fields)
         gameOver = checkWin(fields)
         # Computers turn
@@ -105,9 +106,9 @@ def checkWin(fields):
     return False
 # Player function
 def userInput(fields):
-    global running
     field = input("Enter a number from 1 to 9: ")
     if (field == "return"):
+        global running
         running = False
         return False
     elif(not field.isdigit() or int(field) < 1 or int(field) > 9):
@@ -150,7 +151,7 @@ def computerMove(fields):
     # Checks if the player is about to win
     # If two player Chars are filled and he is about to win, go ahead and block him
 
-    #for lines in win_lines:
+    for lines in win_lines:
         chars_present = 0
         target = None
 
@@ -164,16 +165,17 @@ def computerMove(fields):
             fields[target] = oIcon
             return
 
-    # Grab the center edit: It's actually a bad move
-    #if (fields[4] == " "):
-    #    fields[4] = oIcon
-    #    return
+    # Grab the center edit:
+    if (fields[4] == " "):
+        fields[4] = oIcon
+        return
 
     # Take the corners
-    for i in [0, 2, 6, 8]:
-        if fields[i] == " ":
-            fields[i] = oIcon
-            return
+    elif (fields[4] == xIcon):
+        for i in [0, 2, 6, 8]:
+            if (fields[i] == " "):
+                fields[i] = oIcon
+                return
 
     # Fallback to any empty
     for i in range(9):

@@ -4,32 +4,81 @@ import time
 from utils import helpers
 from utils.helpers import conn
 
+running = True
 
-# Set hiddenword
-# Split word into letters
-# Request input
-# Split input into letters
-# Check which letters match
-# Color them
-# If all letters match, you win
+# print("\033[31mThis is red text\033[0m")
+# print("\033[32mThis is green text\033[0m")
+# print("\033[33mThis is yellow text\033[0m")
+# print("\033[34mThis is blue text\033[0m")
+# print("\033[35mThis is magenta text\033[0m")
+# print("\033[36mThis is cyan text\033[0m")
+with open("assets/word_list.txt", "r") as file:
+    word_list = [line.strip() for line in file if line.strip()]
+
+
+hiddenWord = word_list[random.randint(0, len(word_list) - 1)]
+
+word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
+        [' ', ' ', ' ', ' ', ' '],  # Row 1
+        [' ', ' ', ' ', ' ', ' '],  # Row 2
+        [' ', ' ', ' ', ' ', ' '],  # Row 3
+        [' ', ' ', ' ', ' ', ' '],  # Row 4
+        [' ', ' ', ' ', ' ', ' ']]  # Row 5
 
 def print_box():
-    print("----------")
-    print("|x|x|x|x|x|")
-    print("|x|x|x|x|x|")
-    print("|x|x|x|x|x|")
-    print("|x|x|x|x|x|")
-    print("|x|x|x|x|x|")
-    print("|x|x|x|x|x|")
-    print("----------")
+    print("┌─────┬─────┬─────┬─────┬─────┐")
+    for i in range(len(word)):
+        print(f"│  {word[i][0]}  │  {word[i][1]}  │  {word[i][2]}  │  {word[i][3]}  │  {word[i][4]}  │")
+        if i < len(word) - 1:
+            print("├─────┼─────┼─────┼─────┼─────┤")
+    print("└─────┴─────┴─────┴─────┴─────┘")
 
-
+# Main loop
 def gameLoop():
     gameOver = False
-    while (gameOver == False):
-        helpers.clear_screen()
-        print_box()
-        hiddenWord = input("Enter your guess: ")
+    global word_list
+    global running
+    i = 0
+    helpers.clear_screen()
+    print_box()
+
+    while(running==True):
+        userGuess = input("Enter your guess: ").strip().lower()
+        if(userGuess == "return"): # Return to main menu
+            running = False
+            break
+        elif(len(userGuess) == 5): # Checks for valid length
+            if(userGuess in word_list):
+                potentialGuess = list(userGuess)
+                for j in range(0,5):
+                    if(potentialGuess[j] == hiddenWord[j]): # Letter matches, paint it green
+                        word[i][j] = f"\033[32m{potentialGuess[j].upper()}\033[0m"
+                    elif(potentialGuess[j] in hiddenWord): # Word contains letter, paint it yellow
+                        word[i][j] = f"\033[33m{potentialGuess[j].upper()}\033[0m"
+                    else: # Letters is wrong
+                        word[i][j] = potentialGuess[j].upper()
+                i += 1 # Increment row
+                helpers.clear_screen()
+                print_box()
+            else:
+                print_box()
+                print("Word not recognized. Try again.")
+            if(userGuess == hiddenWord): # Check if player won
+                print("You won! Congratulations!")
+                conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", (i,))
+                break
+            elif(i == 6):
+                print("Whoops. You lost!")
+                print("The word was: " + f"\033[31m{hiddenWord}\033[0m")
+                conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", ("lost",))
+                break
+        else:
+            print_box()
+            print("Invalid Input. Try again.")
+
+
+# If letter is correct, make it green
+# If word contains the letter, make it yellow
 
 
 
@@ -64,4 +113,4 @@ def startGame():
 
 
 # For testing
-# startGame()
+#startGame()

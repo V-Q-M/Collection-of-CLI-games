@@ -36,10 +36,11 @@ conn.execute("""
                 winner text NOT NULL
                 ); 
             """)
+# Wordle table
 conn.execute("""
             CREATE TABLE IF NOT EXISTS wordleStats (
-                games int PRIMARY KEY DEFAULT nextval('inc'),
-                guesses int
+                game int PRIMARY KEY DEFAULT nextval('inc'),
+                guesses text
                 );
             """)
 running = True
