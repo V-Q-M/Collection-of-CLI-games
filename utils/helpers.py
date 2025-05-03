@@ -6,14 +6,16 @@ import duckdb
 # Clears the terminal
 def clear_screen():
     system_name = platform.system()
-    # pick the correct clear command
     if system_name == 'Windows':
         os.system('cls')
     elif system_name in ('Linux', 'Darwin'):
-        if 'TERM' in os.environ:
+        if os.getenv('TERM'):
             os.system('clear')
         else:
-            print("\n" * 100)  # Fallback
+            print("\n" * 100)  # Fallback for non-interactive terminals
+    else:
+        print("\n" * 100)  # Generic fallback
+
 
 
 # Activate Database
@@ -33,5 +35,11 @@ conn.execute("""
                 rounds int PRIMARY KEY DEFAULT nextval('inc'),
                 winner text NOT NULL
                 ); 
+            """)
+conn.execute("""
+            CREATE TABLE IF NOT EXISTS wordleStats (
+                games int PRIMARY KEY DEFAULT nextval('inc'),
+                guesses int
+                );
             """)
 running = True

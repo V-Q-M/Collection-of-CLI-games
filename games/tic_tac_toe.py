@@ -5,8 +5,8 @@ from utils import helpers
 from utils.helpers import conn
 
 running = True
-xIcon = "✖"
-oIcon = "⭘"
+xIcon = "x"
+oIcon = "O"
 starIcon = "✓"
 # winning combinations
 win_lines = [
@@ -58,11 +58,13 @@ def gameLoop():
         print_board(fields)
         gameOver = checkWin(fields)
         # Computers turn
-        print("Computer is thinking...")
-        time.sleep(2)
-        computerMove(fields)
-        print_board(fields)
-        gameOver = checkWin(fields)
+        if(gameOver == False):
+            print("Computer is thinking...")
+            time.sleep(2)
+            helpers.clear_screen()
+            computerMove(fields)
+            # print_board(fields)
+            gameOver = checkWin(fields)
         # loops back
 
 # Checks if any line has won already, the rest is visuals
@@ -116,6 +118,7 @@ def userInput(fields):
 
     field = int(field) - 1
     if fields[field] == " ":
+        helpers.clear_screen()
         fields[field] = xIcon
     else:
         helpers.clear_screen()
@@ -161,10 +164,10 @@ def computerMove(fields):
             fields[target] = oIcon
             return
 
-    # Grab the center
-    if (fields[4] == " "):
-        fields[4] = oIcon
-        return
+    # Grab the center edit: It's actually a bad move
+    #if (fields[4] == " "):
+    #    fields[4] = oIcon
+    #    return
 
     # Take the corners
     for i in [0, 2, 6, 8]:
@@ -181,8 +184,9 @@ def computerMove(fields):
 
 def startGame():
     global running
+    running = True
     gameLoop()
-
+    # Menu loop
     while running:
         continuePrompt = input("Play again? (yes/no) Or view stats? (stats): ")
         if continuePrompt == 'no':

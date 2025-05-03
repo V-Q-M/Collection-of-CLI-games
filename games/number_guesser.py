@@ -42,8 +42,9 @@ def gameLoop(hiddenNumber):
 
 def startGame():
     global running
+    running = True
     gameLoop(random.randint(1, 100))
-    # Main loop
+    # Menu loop
     while running:
         continuePrompt = input("Play again? (yes/no) Or view stats? (stats): ")
         if continuePrompt == 'no':
