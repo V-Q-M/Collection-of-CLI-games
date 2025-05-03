@@ -20,15 +20,15 @@ while running:
     print("4. IN PROGRESS")
     print("5. Exit")
     answer = input("Enter your choice: ")
-    if (answer == "1"): # Number guesser
+    if (answer == "1" or answer == "Guess the number"): # Number guesser
         print("\nStarting \"Guess the number\"")
         time.sleep(2)
         number_guesser.startGame()
-    elif(answer == "2"): # Tic tac toe
+    elif(answer == "2" or answer == "Tic Tac Toe"): # Tic tac toe
         print("\nStarting \"Tic Tac Toe\"")
         time.sleep(2)
         tic_tac_toe.startGame()
-    elif(answer == "3"): # Wordle
+    elif(answer == "3" or answer == "Wordle"): # Wordle
         print("\nStarting \"Wordle\"")
         time.sleep(2)
         wordle.startGame()
