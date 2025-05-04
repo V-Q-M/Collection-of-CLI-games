@@ -86,7 +86,7 @@ def gameLoop():
                 break
             elif(i == 6):
                 print("Whoops. You lost!")
-                print("The word was: " + f"\033[31m{hiddenWord}\033[0m")
+                print("The word was: " + f"\033[31m{answer}\033[0m")
                 i = 0
                 conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", ("lost",))
                 break
