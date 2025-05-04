@@ -23,22 +23,21 @@ def gameLoop(hiddenNumber):
             tries-= 1
             running = False
             break
-        elif (int(guess) == hiddenNumber or (int(guess)) == 0):
-            print("Correct guess! Great job!")
-            # Save into the database
-            conn.execute("""
-                         INSERT INTO numberGuesserStats (guesses)
-                         VALUES (?);
-                         """, (tries,))
-            break
-        elif (int(guess) > hiddenNumber):
-            print("Try lower!")
-        elif (int(guess) < hiddenNumber):
-            print("Try higher!")
-        elif (guess == "exit"):
-            running = False
+        elif guess.isdigit():
+            if (int(guess) == hiddenNumber):
+                print("Correct guess! Great job!")
+                # Save into the database
+                conn.execute("""
+                             INSERT INTO numberGuesserStats (guesses)
+                             VALUES (?);
+                             """, (tries,))
+                break
+            elif (int(guess) > hiddenNumber):
+                print("Try lower!")
+            elif (int(guess) < hiddenNumber):
+                print("Try higher!")
         else:
-            print("Somethings off. Hmm maybe bug?")
+            print("Invalid Input.")
 
 def startGame():
     global running
