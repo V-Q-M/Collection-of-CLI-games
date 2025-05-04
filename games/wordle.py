@@ -2,19 +2,16 @@ import random
 
 from utils import helpers
 from utils.helpers import conn
-from assets import word_list
-from assets.word_list import validWords
+from assets import valid_word_list, answer_word_list
+from assets.valid_word_list import validWords
+from assets.answer_word_list import answerWords
 
 running = True
 
-# print("\033[31mThis is red text\033[0m")
-# print("\033[32mThis is green text\033[0m")
-# print("\033[33mThis is yellow text\033[0m")
-# print("\033[34mThis is blue text\033[0m")
-# print("\033[35mThis is magenta text\033[0m")
-# print("\033[36mThis is cyan text\033[0m")
 
-hiddenWord = validWords[random.randint(0, len(validWords) - 1)]
+#hiddenWord = answerWords[random.randint(0, len(answerWords) - 1)]
+answer = 'pingo'
+hiddenWord = list(answer)
 word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
         [' ', ' ', ' ', ' ', ' '],  # Row 1
         [' ', ' ', ' ', ' ', ' '],  # Row 2
@@ -26,6 +23,7 @@ word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
 def pickWord():
     global word
     global hiddenWord
+    global answer
     # The list of displayed words need to be emptied
     word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
             [' ', ' ', ' ', ' ', ' '],  # Row 1
@@ -34,7 +32,9 @@ def pickWord():
             [' ', ' ', ' ', ' ', ' '],  # Row 4
             [' ', ' ', ' ', ' ', ' ']]  # Row 5
     # Pick the word
-    hiddenWord = validWords[random.randint(0, len(validWords) - 1)]
+    #hiddenWord = answerWords[random.randint(0, len(validWords) - 1)]
+    answer = 'pingo'
+    hiddenWord = list(answer)
 
 
 
@@ -50,6 +50,7 @@ def print_box():
 def gameLoop():
     gameOver = False
     global running
+    global hiddenWord
     i = 0
     helpers.clear_screen()
     print_box()
@@ -63,12 +64,14 @@ def gameLoop():
             if(userGuess in validWords):
                 potentialGuess = list(userGuess)
                 for j in range(0,5):
-                    if(potentialGuess[j] == hiddenWord[j]): # Letter matches, paint it green
+                    if(potentialGuess[j] == answer[j]): # Letter matches, paint it green
                         word[i][j] = f"\033[32m{potentialGuess[j].upper()}\033[0m"
+                        hiddenWord[j] = '-' # Change that letter, so that nonexistent duplicates don't get flagged falsely
                     elif(potentialGuess[j] in hiddenWord): # Word contains letter, paint it yellow
                         word[i][j] = f"\033[33m{potentialGuess[j].upper()}\033[0m"
                     else: # Letters is wrong
                         word[i][j] = potentialGuess[j].upper()
+                hiddenWord = list(answer) # make the hiddenWord equal to answer again
                 i += 1 # Increment row
                 helpers.clear_screen()
                 print_box()
@@ -76,7 +79,7 @@ def gameLoop():
                 helpers.clear_screen()
                 print_box()
                 print("Word not recognized. Try again.")
-            if(userGuess == hiddenWord): # Check if player won
+            if(userGuess == answer): # Check if player won
                 print("You won! Congratulations!")
                 i = 0
                 conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", (i,))
