@@ -21,6 +21,9 @@ wknight = "♞"
 wrook   = "♜"
 wpawn   = "♟"
 
+whitePieces = [wking, wqueen, wbishop, wknight, wrook, wpawn]
+blackPieces = [bking, bqueen, bbishop, bknight, brook, bpawn]
+
 emptySquare = "-"
 
 # Converts the 0 initialized to 1.
