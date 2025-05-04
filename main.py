@@ -35,7 +35,7 @@ while running:
     elif(answer == "4"): #
         continue
     elif(answer == "5" or answer == "exit"): # Exit application
-        running = False;
+        running = False
     else:
         helpers.clear_screen()
         print("\nPlease enter the number.")

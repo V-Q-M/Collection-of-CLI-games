@@ -1,8 +1,9 @@
 import random
-import time
 
 from utils import helpers
 from utils.helpers import conn
+from assets import word_list
+from assets.word_list import validWords
 
 running = True
 
@@ -13,9 +14,7 @@ running = True
 # print("\033[35mThis is magenta text\033[0m")
 # print("\033[36mThis is cyan text\033[0m")
 
-with open("assets/word_list.txt", "r") as file:
-    word_list = [line.strip() for line in file if line.strip()]
-
+hiddenWord = validWords[random.randint(0, len(validWords) - 1)]
 word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
         [' ', ' ', ' ', ' ', ' '],  # Row 1
         [' ', ' ', ' ', ' ', ' '],  # Row 2
@@ -25,20 +24,17 @@ word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
 
 
 def pickWord():
-    global word_list
     global word
-    with open("assets/word_list.txt", "r") as file:
-        word_list = [line.strip() for line in file if line.strip()]
-
+    global hiddenWord
+    # The list of displayed words need to be emptied
     word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
             [' ', ' ', ' ', ' ', ' '],  # Row 1
             [' ', ' ', ' ', ' ', ' '],  # Row 2
             [' ', ' ', ' ', ' ', ' '],  # Row 3
             [' ', ' ', ' ', ' ', ' '],  # Row 4
             [' ', ' ', ' ', ' ', ' ']]  # Row 5
-
-
-hiddenWord = word_list[random.randint(0, len(word_list) - 1)]
+    # Pick the word
+    hiddenWord = validWords[random.randint(0, len(validWords) - 1)]
 
 
 
@@ -53,7 +49,6 @@ def print_box():
 # Main loop
 def gameLoop():
     gameOver = False
-    global word_list
     global running
     i = 0
     helpers.clear_screen()
@@ -65,7 +60,7 @@ def gameLoop():
             running = False
             break
         elif(len(userGuess) == 5): # Checks for valid length
-            if(userGuess in word_list):
+            if(userGuess in validWords):
                 potentialGuess = list(userGuess)
                 for j in range(0,5):
                     if(potentialGuess[j] == hiddenWord[j]): # Letter matches, paint it green
