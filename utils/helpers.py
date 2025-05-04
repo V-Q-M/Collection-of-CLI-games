@@ -38,11 +38,20 @@ conn.execute("""
                 ); 
             """)
 # Wordle table
-conn.execute("CREATE SEQUENCE IF NOT EXISTS inc2 START WITH 1 INCREMENT BY 1;")
+conn.execute("CREATE SEQUENCE IF NOT EXISTS inc3 START WITH 1 INCREMENT BY 1;")
 conn.execute("""
             CREATE TABLE IF NOT EXISTS wordleStats (
-                game int PRIMARY KEY DEFAULT nextval('inc2'),
+                game int PRIMARY KEY DEFAULT nextval('inc3'),
                 guesses text
+                );
+            """)
+# Chess table
+conn.execute("CREATE SEQUENCE IF NOT EXISTS inc4 START WITH 1 INCREMENT BY 1;")
+conn.execute("""
+            CREATE TABLE IF NOT EXISTS chessStats (
+                game int PRIMARY KEY DEFAULT nextval('inc4'),
+                turns text,
+                winner text
                 );
             """)
 running = True

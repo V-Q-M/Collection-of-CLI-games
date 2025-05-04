@@ -52,6 +52,7 @@ def gameLoop():
     global running
     global hiddenWord
     i = 0
+    guesses = 0
     helpers.clear_screen()
     print_box()
 
@@ -90,6 +91,7 @@ def gameLoop():
                 i = 0
                 conn.execute("INSERT INTO wordleStats (guesses) VALUES (?);", ("lost",))
                 break
+            guesses += 1
         else:
             helpers.clear_screen()
             print_box()

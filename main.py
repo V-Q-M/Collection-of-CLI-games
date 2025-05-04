@@ -4,7 +4,7 @@ import time
 
 from utils import helpers
 from utils.helpers import conn
-from games import number_guesser, tic_tac_toe, wordle
+from games import number_guesser, tic_tac_toe, wordle, chess
 
 
 # Controls the gamestate
@@ -17,7 +17,7 @@ while running:
     print("1. Guess the number")
     print("2. Tic Tac Toe")
     print("3. Wordle")
-    print("4. IN PROGRESS")
+    print("4. Chess")
     print("5. Exit")
     answer = input("Enter your choice: ")
     if (answer == "1" or answer == "Guess the number"): # Number guesser
@@ -32,8 +32,10 @@ while running:
         print("\nStarting \"Wordle\"")
         time.sleep(2)
         wordle.startGame()
-    elif(answer == "4"): #
-        continue
+    elif(answer == "4"): # Chess
+        print("\nStarting \"Chess\"")
+        time.sleep(2)
+        chess.startGame()
     elif(answer == "5" or answer == "exit"): # Exit application
         running = False
     else:
