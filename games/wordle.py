@@ -9,8 +9,8 @@ from assets.answer_word_list import answerWords
 running = True
 
 
-#hiddenWord = answerWords[random.randint(0, len(answerWords) - 1)]
-answer = 'pingo'
+answer = answerWords[random.randint(0, len(answerWords) - 1)]
+#answer = 'pingo'
 hiddenWord = list(answer)
 word = [[' ', ' ', ' ', ' ', ' '],  # Row 0
         [' ', ' ', ' ', ' ', ' '],  # Row 1
@@ -32,8 +32,8 @@ def pickWord():
             [' ', ' ', ' ', ' ', ' '],  # Row 4
             [' ', ' ', ' ', ' ', ' ']]  # Row 5
     # Pick the word
-    #hiddenWord = answerWords[random.randint(0, len(validWords) - 1)]
-    answer = 'pingo'
+    answer = answerWords[random.randint(0, len(answerWords) - 1)]
+    #answer = 'paper'
     hiddenWord = list(answer)
 
 
