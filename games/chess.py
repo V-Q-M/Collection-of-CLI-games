@@ -120,96 +120,95 @@ def unhighlight_board(board):
 validMoveStorage = []
 
 # Checks which moves are valid and colours the corresponding squares
-def checkValidMoves(xCord,yCord):
-    global square
+def checkValidMoves(xCord,yCord, boardInput):
     global emptySquare
     # Defines movement
     def verticalPawn(n):
         global validMoveStorage
-        if square[x(xCord)][y(yCord)] in whitePieces:
+        if boardInput[x(xCord)][y(yCord)] in whitePieces:
             for i in range(1, n):
                 if (yCord + i <= 8):
-                    if square[x(xCord)][y(yCord + i)] == emptySquare: # move forward
-                        square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
+                    if boardInput[x(xCord)][y(yCord + i)] == emptySquare: # move forward
+                        boardInput[x(xCord)][y(yCord + i)] = highlight_red(boardInput[x(xCord)][y(yCord + i)])
                         validMoveStorage += [[xCord, yCord + i]]
                     else:
                         break
 
             for dx in [-1, 1]:
                 if 0 <= xCord + dx < 8 and yCord + 1 <= 8:
-                    if square[x(xCord + dx)][y(yCord + 1)] in blackPieces:
-                        square[x(xCord + dx)][y(yCord + 1)] = highlight_red(square[x(xCord + dx)][y(yCord + 1)])
+                    if boardInput[x(xCord + dx)][y(yCord + 1)] in blackPieces:
+                        boardInput[x(xCord + dx)][y(yCord + 1)] = highlight_red(boardInput[x(xCord + dx)][y(yCord + 1)])
                         validMoveStorage += [[xCord + dx, yCord + 1]]
 
-        elif square[x(xCord)][y(yCord)] in blackPieces:
+        elif boardInput[x(xCord)][y(yCord)] in blackPieces:
             for i in range(1, n):
                 if yCord - i > 0:
-                    if square[x(xCord)][y(yCord - i)] == emptySquare: # move forward
-                        square[x(xCord)][y(yCord - i)] = highlight_red(square[x(xCord)][y(yCord - i)])
+                    if boardInput[x(xCord)][y(yCord - i)] == emptySquare: # move forward
+                        boardInput[x(xCord)][y(yCord - i)] = highlight_red(boardInput[x(xCord)][y(yCord - i)])
                         validMoveStorage += [[xCord, yCord - i]]
                     else:
                         break
             # Diagonal captures
             for dx in [-1, 1]:
                 if 0 <= xCord + dx < 8 and yCord - 1 > 0:
-                    if square[x(xCord + dx)][y(yCord - 1)] in whitePieces:
-                        square[x(xCord + dx)][y(yCord - 1)] = highlight_red(square[x(xCord + dx)][y(yCord - 1)])
+                    if boardInput[x(xCord + dx)][y(yCord - 1)] in whitePieces:
+                        boardInput[x(xCord + dx)][y(yCord - 1)] = highlight_red(boardInput[x(xCord + dx)][y(yCord - 1)])
                         validMoveStorage += [[xCord + dx, yCord - 1]]
 
     def vertical(n):
         global validMoveStorage
         for i in range(1, n):  # start at 1 to skip the current square
             if yCord + i <= 8:
-                if square[x(xCord)][y(yCord + i)] != emptySquare: # Collision
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord)][y(yCord + i)] in blackPieces: # add to targets
-                        square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
+                if boardInput[x(xCord)][y(yCord + i)] != emptySquare: # Collision
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord)][y(yCord + i)] in blackPieces: # add to targets
+                        boardInput[x(xCord)][y(yCord + i)] = highlight_red(boardInput[x(xCord)][y(yCord + i)])
                         validMoveStorage += [[xCord,yCord + i]] # add this move
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord)][y(yCord + i)] in whitePieces: # add to targets
-                        square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord)][y(yCord + i)] in whitePieces: # add to targets
+                        boardInput[x(xCord)][y(yCord + i)] = highlight_red(boardInput[x(xCord)][y(yCord + i)])
                         validMoveStorage += [[xCord,yCord + i]]
                     break
-                square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
+                boardInput[x(xCord)][y(yCord + i)] = highlight_red(boardInput[x(xCord)][y(yCord + i)])
                 validMoveStorage += [[xCord, yCord + i]]
 
         for i in range(1, n):
             if yCord - i > 0:
-                if square[x(xCord)][y(yCord - i)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord)][y(yCord - i)] in blackPieces:
-                        square[x(xCord)][y(yCord - i)] = highlight_red(square[x(xCord)][y(yCord - i)])
+                if boardInput[x(xCord)][y(yCord - i)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord)][y(yCord - i)] in blackPieces:
+                        boardInput[x(xCord)][y(yCord - i)] = highlight_red(boardInput[x(xCord)][y(yCord - i)])
                         validMoveStorage += [[xCord,yCord - i]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord)][y(yCord - i)] in whitePieces:
-                        square[x(xCord)][y(yCord - i)] = highlight_red(square[x(xCord)][y(yCord - i)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord)][y(yCord - i)] in whitePieces:
+                        boardInput[x(xCord)][y(yCord - i)] = highlight_red(boardInput[x(xCord)][y(yCord - i)])
                         validMoveStorage += [[xCord,yCord - i]]
                     break
-                square[x(xCord)][y(yCord - i)] = highlight_red(square[x(xCord)][y(yCord - i)])
+                boardInput[x(xCord)][y(yCord - i)] = highlight_red(square[x(xCord)][y(yCord - i)])
                 validMoveStorage += [[xCord, yCord - i]]
 
     def horizontal(n):
         global validMoveStorage
         for i in range(1, n):
             if xCord + i <= 8:
-                if square[x(xCord + i)][y(yCord)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord + i)][y(yCord)] in blackPieces:
-                        square[x(xCord + i)][y(yCord)] = highlight_red(square[x(xCord + i)][y(yCord)])
+                if boardInput[x(xCord + i)][y(yCord)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord + i)][y(yCord)] in blackPieces:
+                        boardInput[x(xCord + i)][y(yCord)] = highlight_red(boardInput[x(xCord + i)][y(yCord)])
                         validMoveStorage += [[xCord + i,yCord]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord + i)][y(yCord)] in whitePieces:
-                        square[x(xCord + i)][y(yCord)] = highlight_red(square[x(xCord + i)][y(yCord)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord + i)][y(yCord)] in whitePieces:
+                        boardInput[x(xCord + i)][y(yCord)] = highlight_red(boardInput[x(xCord + i)][y(yCord)])
                         validMoveStorage += [[xCord + i,yCord]]
                     break
-                square[x(xCord + i)][y(yCord)] = highlight_red(square[x(xCord + i)][y(yCord)])
+                boardInput[x(xCord + i)][y(yCord)] = highlight_red(boardInput[x(xCord + i)][y(yCord)])
                 validMoveStorage += [[xCord + i, yCord]]
 
         for i in range(1, n):
             if xCord - i > 0:
-                if square[x(xCord - i)][y(yCord)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord - i)][y(yCord)] in blackPieces:
-                        square[x(xCord - i)][y(yCord)] = highlight_red(square[x(xCord - i)][y(yCord)])
+                if boardInput[x(xCord - i)][y(yCord)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord - i)][y(yCord)] in blackPieces:
+                        boardInput[x(xCord - i)][y(yCord)] = highlight_red(boardInput[x(xCord - i)][y(yCord)])
                         validMoveStorage += [[xCord - i,yCord]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord - i)][y(yCord)] in whitePieces:
-                        square[x(xCord - i)][y(yCord)] = highlight_red(square[x(xCord - i)][y(yCord)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord - i)][y(yCord)] in whitePieces:
+                        boardInput[x(xCord - i)][y(yCord)] = highlight_red(boardInput[x(xCord - i)][y(yCord)])
                         validMoveStorage += [[xCord - i,yCord]]
                     break
-                square[x(xCord - i)][y(yCord)] = highlight_red(square[x(xCord - i)][y(yCord)])
+                boardInput[x(xCord - i)][y(yCord)] = highlight_red(boardInput[x(xCord - i)][y(yCord)])
                 validMoveStorage += [[xCord - i, yCord]]
 
     def diagonal(n):
@@ -217,57 +216,57 @@ def checkValidMoves(xCord,yCord):
         # Bottom-right ↘
         for i in range(1, n):
             if (xCord + i <= 8 and yCord + i <= 8):
-                if square[x(xCord + i)][y(yCord + i)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord + i)][y(yCord + i)] in blackPieces:
-                        square[x(xCord + i)][y(yCord + i)] = highlight_red(square[x(xCord + i)][y(yCord + i)])
+                if boardInput[x(xCord + i)][y(yCord + i)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord + i)][y(yCord + i)] in blackPieces:
+                        boardInput[x(xCord + i)][y(yCord + i)] = highlight_red(boardInput[x(xCord + i)][y(yCord + i)])
                         validMoveStorage += [[xCord + i,yCord + i]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord + i)][y(yCord + i)] in whitePieces:
-                        square[x(xCord + i)][y(yCord + i)] = highlight_red(square[x(xCord + i)][y(yCord + i)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord + i)][y(yCord + i)] in whitePieces:
+                        boardInput[x(xCord + i)][y(yCord + i)] = highlight_red(boardInput[x(xCord + i)][y(yCord + i)])
                         validMoveStorage += [[xCord + i,yCord + i]]
                     break
-                square[x(xCord + i)][y(yCord + i)] = highlight_red(square[x(xCord + i)][y(yCord + i)])
+                boardInput[x(xCord + i)][y(yCord + i)] = highlight_red(boardInput[x(xCord + i)][y(yCord + i)])
                 validMoveStorage += [[xCord + i,yCord + i]]
 
         # Top-left ↖
         for i in range(1, n):
             if (xCord - i > 0 and yCord - i > 0):
-                if square[x(xCord - i)][y(yCord - i)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord - i)][y(yCord - i)] in blackPieces:
-                        square[x(xCord - i)][y(yCord - i)] = highlight_red(square[x(xCord - i)][y(yCord - i)])
+                if boardInput[x(xCord - i)][y(yCord - i)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord - i)][y(yCord - i)] in blackPieces:
+                        boardInput[x(xCord - i)][y(yCord - i)] = highlight_red(boardInput[x(xCord - i)][y(yCord - i)])
                         validMoveStorage += [[xCord - i,yCord - i]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord - i)][y(yCord - i)] in whitePieces:
-                        square[x(xCord - i)][y(yCord - i)] = highlight_red(square[x(xCord - i)][y(yCord - i)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord - i)][y(yCord - i)] in whitePieces:
+                        boardInput[x(xCord - i)][y(yCord - i)] = highlight_red(boardInput[x(xCord - i)][y(yCord - i)])
                         validMoveStorage += [[xCord - i,yCord - i]]
                     break
-                square[x(xCord - i)][y(yCord - i)] = highlight_red(square[x(xCord - i)][y(yCord - i)])
+                boardInput[x(xCord - i)][y(yCord - i)] = highlight_red(boardInput[x(xCord - i)][y(yCord - i)])
                 validMoveStorage += [[xCord - i, yCord - i]]
 
         # Bottom-left ↙
         for i in range(1, n):
             if (xCord - i > 0 and yCord + i <= 8):
-                if square[x(xCord - i)][y(yCord + i)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord - i)][y(yCord + i)] in blackPieces:
-                        square[x(xCord - i)][y(yCord + i)] = highlight_red(square[x(xCord - i)][y(yCord + i)])
+                if boardInput[x(xCord - i)][y(yCord + i)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord - i)][y(yCord + i)] in blackPieces:
+                        boardInput[x(xCord - i)][y(yCord + i)] = highlight_red(boardInput[x(xCord - i)][y(yCord + i)])
                         validMoveStorage += [[xCord - i,yCord + i]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord - i)][y(yCord + i)] in whitePieces:
-                        square[x(xCord - i)][y(yCord + i)] = highlight_red(square[x(xCord - i)][y(yCord + i)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord - i)][y(yCord + i)] in whitePieces:
+                        boardInput[x(xCord - i)][y(yCord + i)] = highlight_red(boardInput[x(xCord - i)][y(yCord + i)])
                         validMoveStorage += [[xCord - i,yCord + i]]
                     break
-                square[x(xCord - i)][y(yCord + i)] = highlight_red(square[x(xCord - i)][y(yCord + i)])
+                boardInput[x(xCord - i)][y(yCord + i)] = highlight_red(boardInput[x(xCord - i)][y(yCord + i)])
                 validMoveStorage += [[xCord - i, yCord + i]]
 
         # Top-right ↗
         for i in range(1, n):
             if (xCord + i <= 8 and yCord - i > 0):
-                if square[x(xCord + i)][y(yCord - i)] != emptySquare:
-                    if square[x(xCord)][y(yCord)] in whitePieces and square[x(xCord + i)][y(yCord - i)] in blackPieces:
-                        square[x(xCord + i)][y(yCord - i)] = highlight_red(square[x(xCord + i)][y(yCord - i)])
+                if boardInput[x(xCord + i)][y(yCord - i)] != emptySquare:
+                    if boardInput[x(xCord)][y(yCord)] in whitePieces and boardInput[x(xCord + i)][y(yCord - i)] in blackPieces:
+                        boardInput[x(xCord + i)][y(yCord - i)] = highlight_red(boardInput[x(xCord + i)][y(yCord - i)])
                         validMoveStorage += [[xCord + i,yCord - i]]
-                    elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord + i)][y(yCord - i)] in whitePieces:
-                        square[x(xCord + i)][y(yCord - i)] = highlight_red(square[x(xCord + i)][y(yCord - i)])
+                    elif boardInput[x(xCord)][y(yCord)] in blackPieces and boardInput[x(xCord + i)][y(yCord - i)] in whitePieces:
+                        boardInput[x(xCord + i)][y(yCord - i)] = highlight_red(boardInput[x(xCord + i)][y(yCord - i)])
                         validMoveStorage += [[xCord + i,yCord - i]]
                     break
-                square[x(xCord + i)][y(yCord - i)] = highlight_red(square[x(xCord + i)][y(yCord - i)])
+                boardInput[x(xCord + i)][y(yCord - i)] = highlight_red(squboardInputare[x(xCord + i)][y(yCord - i)])
                 validMoveStorage += [[xCord + i,yCord - i]]
 
     def knightPattern():
@@ -282,24 +281,24 @@ def checkValidMoves(xCord,yCord):
         for dx, dy in knight_moves:
             nx, ny = xCord + dx, yCord + dy
             if 0 < nx <= 8 and 0 < ny <= 8:
-                target = square[x(nx)][y(ny)]
-                current = square[x(xCord)][y(yCord)]
+                target = boardInput[x(nx)][y(ny)]
+                current = boardInput[x(xCord)][y(yCord)]
 
                 # Knight capture
                 if current in whitePieces and target in blackPieces:
-                    square[x(nx)][y(ny)] = highlight_red(target)
+                    boardInput[x(nx)][y(ny)] = highlight_red(target)
                     validMoveStorage += [[nx, ny]]
                 elif current in blackPieces and target in whitePieces:
-                    square[x(nx)][y(ny)] = highlight_red(target)
+                    boardInput[x(nx)][y(ny)] = highlight_red(target)
                     validMoveStorage += [[nx, ny]]
                 # Knight move to empty square
                 elif target == emptySquare:
-                    square[x(nx)][y(ny)] = highlight_red(target)
+                    boardInput[x(nx)][y(ny)] = highlight_red(target)
                     validMoveStorage += [[nx, ny]]
 
     # L pattern
 
-    selectedPiece = square[x(xCord)][y(yCord)]
+    selectedPiece = boardInput[x(xCord)][y(yCord)]
     # Check which piece is selected to show the correct movement rules
     if (selectedPiece == bqueen or selectedPiece == wqueen):  # Queen can move all directions
         #print("found queen")
@@ -335,6 +334,7 @@ def checkValidMoves(xCord,yCord):
 def selectPiece():
     global translate
     global xCord, yCord
+    global validMoveStorage
     piece = input("Which piece do you want to move?: ")
     selection = list(piece)
     if (selection[0] in translate and selection[1].isdigit()):
@@ -342,7 +342,8 @@ def selectPiece():
         yCord = int(selection[1])
         if (square[x(xCord)][y(yCord)] != emptySquare):
             if (playerTurn == 'white' and square[x(xCord)][y(yCord)] in whitePieces)or(playerTurn == 'black' and square[x(xCord)][y(yCord)] in blackPieces):
-                checkValidMoves(xCord, yCord)  # Shows the possible moves in red
+                validMoveStorage = []
+                checkValidMoves(xCord, yCord, square)  # Shows the possible moves in red
                 square[x(xCord)][y(yCord)] = highlight_blue(unhighlight(square[x(xCord)][y(yCord)]))  # Selected piece is blue
                 print_board()
                 print(xCord)
@@ -366,13 +367,13 @@ def riscChecker():
     result = []
 
     # Loop through each row of fakeSquare
-    for y, row in enumerate(fakeSquare):  # `y` is the index of the row (0 to 7)
+    for y, row in enumerate(fakeSquare):  # y is the index of the row (0 to 7)
         # Loop through each item (square or piece) in the current row
-        for x, item in enumerate(row):  # `x` is the index of the item (0 to 7)
-            if (square[y - 1][x - 1] in whitePieces):
+        for x, item in enumerate(row):  # x is the index of the item (0 to 7)
+            if (fakeSquare[y - 1][x - 1] in blackPieces):
                 validMoveStorage = []  # Reset validMoveStorage for each item
-                unhighlight_board(square)  # Assuming this unhighlights all squares
-                checkValidMoves(x + 1, y + 1)  # Pass the coordinates and item to the function
+                unhighlight_board(fakeSquare)  # Assuming this unhighlights all squares
+                checkValidMoves(x + 1, y + 1, fakeSquare)  # Pass the coordinates and item to the function
 
             # Add the valid moves to the buffer (valid positions as (xPos, yPos) tuples)
             buffer += validMoveStorage  # validMoveStorage should be populated by checkValidMoves
@@ -381,12 +382,9 @@ def riscChecker():
     for move in buffer:
         xPos, yPos = move  # Get the coordinates of the valid move
         # Append the Unicode character from square[yPos][xPos] to result
-        if (square[y - 1][x - 1] in blackPieces):
-            result.append(square[yPos - 1][xPos - 1])  # Adjust for 0-based indexing
+        result.append(fakeSquare[yPos - 1][xPos - 1])  # Adjust for 0-based indexing
+    return result
 
-    return result  # Return the accumulated valid moves as result
-
-    return result  # Return the accumulated valid moves
 
 
 # Main loop
@@ -427,10 +425,10 @@ def gameLoop():
                 elif(square[x(xCord)][y(yCord)] == highlight_blue(wpawn) and yCordTarget == 8):
                     square[x(xCord)][y(yCord)] = wqueen
 
-                fakeSquare[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
+                fakeSquare[x(xCordTarget)][y(yCordTarget)] = fakeSquare[x(xCord)][y(yCord)]
                 fakeSquare[x(xCord)][y(yCord)] = emptySquare
-               # square[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
-                #square[x(xCord)][y(yCord)] = emptySquare
+                square[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
+                square[x(xCord)][y(yCord)] = emptySquare
                 # Reset
                 validMoveStorage = []
                 if (playerTurn == 'white'):
