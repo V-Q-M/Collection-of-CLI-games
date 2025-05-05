@@ -1,6 +1,18 @@
 import os
 import platform
-import duckdb
+import subprocess
+import sys
+
+try:
+    import duckdb
+except ImportError:
+    choice = input("\nMissing required module 'duckdb'. Install it now? (y/n): ").strip().lower()
+    if choice == 'y':
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "duckdb"])
+        import duckdb
+    else:
+        print("Exiting. 'duckdb' is required.")
+        sys.exit(1)
 
 
 # Clears the terminal

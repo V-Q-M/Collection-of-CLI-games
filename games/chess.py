@@ -6,7 +6,6 @@ from utils.helpers import conn
 running = True
 
 # Define pieces
-
 bking   = "♔"
 bqueen  = "♕"
 bbishop = "♗"
@@ -25,6 +24,13 @@ whitePieces = [wking, wqueen, wbishop, wknight, wrook, wpawn]
 blackPieces = [bking, bqueen, bbishop, bknight, brook, bpawn]
 
 emptySquare = " "
+playerTurn = 'white'
+
+xCord = 0
+yCord = 0
+
+translate = {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8}  # map letters to numbers
+
 
 # Converts the 0 initialized to 1.
 def x(cord):
@@ -42,10 +48,10 @@ def startPosition():
     square[x(1)][y(1)] = wrook
     square[x(2)][y(1)] = wknight
     square[x(3)][y(1)] = wbishop
-    square[x(4)][y(5)] = wqueen
-    square[x(4)][y(6)] = wking
+    square[x(4)][y(1)] = wqueen
+    square[x(5)][y(1)] = wking
     square[x(6)][y(1)] = wbishop
-    square[x(4)][y(3)] = wknight
+    square[x(7)][y(1)] = wknight
     square[x(8)][y(1)] = wrook
     for i in range(1,9):
         square[x(i)][y(2)] = wpawn
@@ -62,10 +68,17 @@ def startPosition():
     for i in range(1,9):
         square[x(i)][y(7)] = bpawn
 
+
 # Board layout
 def print_board():
     global square
+    global playerTurn
     helpers.clear_screen()
+    if (playerTurn == 'white'):
+        print("            \033[47m\033[30m WHITE TURN \033[0m")
+    else:
+        print("            \033[40m\033[97m BLACK TURN \033[0m")
+
     print("  ┌" + "───┬" * 7 + "───┐")
     for i in range(8):
         row = "│"
@@ -103,26 +116,35 @@ def checkValidMoves(xCord,yCord):
     # Defines movement
     def verticalPawn(n):
         global validMoveStorage
-        for i in range(1, n):  # start at 1 to skip the current square
-            if yCord + i <= 8 and square[x(xCord)][y(yCord)] in whitePieces:
-                if square[x(xCord)][y(yCord + i)] != emptySquare:  # Collision
-                    if square[x(xCord)][y(yCord + i)] in blackPieces:  # add to targets
+        if square[x(xCord)][y(yCord)] in whitePieces:
+            for i in range(1, n):
+                if (yCord + i <= 8):
+                    if square[x(xCord)][y(yCord + i)] == emptySquare: # move forward
                         square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
-                        validMoveStorage += [[xCord, yCord + i]]  # add this move
-                    break
-                square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
-            validMoveStorage += [[xCord, yCord + i]]
+                        validMoveStorage += [[xCord, yCord + i]]
+                    else:
+                        break
 
-        for i in range(1, n):
-            if yCord + i <= 8 and square[x(xCord)][y(yCord)] in blackPieces:
-                if square[x(xCord)][y(yCord + i)] != emptySquare:  # Collision
-                    if square[x(xCord)][y(yCord + i)] in whitePieces:  # add to targets
-                        square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
-                        validMoveStorage += [[xCord, yCord + i]]  # add this move
-                    break
-                square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
-            validMoveStorage += [[xCord, yCord + i]]
+            for dx in [-1, 1]:
+                if 0 <= xCord + dx < 8 and yCord + 1 <= 8:
+                    if square[x(xCord + dx)][y(yCord + 1)] in blackPieces:
+                        square[x(xCord + dx)][y(yCord + 1)] = highlight_red(square[x(xCord + dx)][y(yCord + 1)])
+                        validMoveStorage += [[xCord + dx, yCord + 1]]
 
+        elif square[x(xCord)][y(yCord)] in blackPieces:
+            for i in range(1, n):
+                if yCord - i > 0:
+                    if square[x(xCord)][y(yCord - i)] == emptySquare: # move forward
+                        square[x(xCord)][y(yCord - i)] = highlight_red(square[x(xCord)][y(yCord - i)])
+                        validMoveStorage += [[xCord, yCord - i]]
+                    else:
+                        break
+            # Diagonal captures
+            for dx in [-1, 1]:
+                if 0 <= xCord + dx < 8 and yCord - 1 > 0:
+                    if square[x(xCord + dx)][y(yCord - 1)] in whitePieces:
+                        square[x(xCord + dx)][y(yCord - 1)] = highlight_red(square[x(xCord + dx)][y(yCord - 1)])
+                        validMoveStorage += [[xCord + dx, yCord - 1]]
 
     def vertical(n):
         global validMoveStorage
@@ -137,7 +159,7 @@ def checkValidMoves(xCord,yCord):
                         validMoveStorage += [[xCord,yCord + i]]
                     break
                 square[x(xCord)][y(yCord + i)] = highlight_red(square[x(xCord)][y(yCord + i)])
-            validMoveStorage += [[xCord, yCord + i]]
+                validMoveStorage += [[xCord, yCord + i]]
 
         for i in range(1, n):
             if yCord - i > 0:
@@ -163,7 +185,6 @@ def checkValidMoves(xCord,yCord):
                     elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord + i)][y(yCord)] in whitePieces:
                         square[x(xCord + i)][y(yCord)] = highlight_red(square[x(xCord + i)][y(yCord)])
                         validMoveStorage += [[xCord + i,yCord]]
-                    square[x(xCord + i)][y(yCord)] = highlight_red(square[x(xCord + i)][y(yCord)])
                     break
                 square[x(xCord + i)][y(yCord)] = highlight_red(square[x(xCord + i)][y(yCord)])
                 validMoveStorage += [[xCord + i, yCord]]
@@ -177,7 +198,6 @@ def checkValidMoves(xCord,yCord):
                     elif square[x(xCord)][y(yCord)] in blackPieces and square[x(xCord - i)][y(yCord)] in whitePieces:
                         square[x(xCord - i)][y(yCord)] = highlight_red(square[x(xCord - i)][y(yCord)])
                         validMoveStorage += [[xCord - i,yCord]]
-                    square[x(xCord - i)][y(yCord)] = highlight_red(square[x(xCord - i)][y(yCord)])
                     break
                 square[x(xCord - i)][y(yCord)] = highlight_red(square[x(xCord - i)][y(yCord)])
                 validMoveStorage += [[xCord - i, yCord]]
@@ -300,56 +320,91 @@ def checkValidMoves(xCord,yCord):
         print("found knight")
         knightPattern()
 
+
+# Piece selection by terminal input
+def selectPiece():
+    global translate
+    global xCord, yCord
+    piece = input("Which piece do you want to move?: ")
+    selection = list(piece)
+    if (selection[0] in translate and selection[1].isdigit()):
+        xCord = translate[selection[0]]
+        yCord = int(selection[1])
+        if (square[x(xCord)][y(yCord)] != emptySquare):
+            if (playerTurn == 'white' and square[x(xCord)][y(yCord)] in whitePieces)or(playerTurn == 'black' and square[x(xCord)][y(yCord)] in blackPieces):
+                checkValidMoves(xCord, yCord)  # Shows the possible moves in red
+                square[x(xCord)][y(yCord)] = highlight_blue(unhighlight(square[x(xCord)][y(yCord)]))  # Selected piece is blue
+                print_board()
+                print(xCord)
+                print(yCord)
+                print(validMoveStorage)
+            else:
+                helpers.clear_screen()
+                print_board()
+                print("Not your piece...")
+                selectPiece()
+        else:
+            helpers.clear_screen()
+            print_board()
+            print("Nothing here...")
+            selectPiece()
+
+
+# Main loop
 def gameLoop():
     gameOver = False
     global running
     global validMoveStorage
     global emptySquare
-    xCord = 0
-    yCord = 0
+    global playerTurn
+    global translate
+    global xCord, yCord
+
     i = 0
     helpers.clear_screen()
     print_board()
-    translate = {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8} # map letters to numbers
 
     while(running==True):
         # Select piece
-        piece = input("Which piece do you want to move?: ")
-        selection = list(piece)
-        if (selection[0] in translate and selection[1].isdigit()):
-            xCord = translate[selection[0]]
-            yCord = int(selection[1])
-            #selectPiece = square[x(xCord)][y(yCord)]
-            checkValidMoves(xCord,yCord)
-            square[x(xCord)][y(yCord)] = highlight_blue(unhighlight(square[x(xCord)][y(yCord)])) # Selected piece is blue
-            print_board()
-            print(xCord)
-            print(yCord)
-            print(validMoveStorage)
+        selectPiece()
 
 
         # Select target
         move = input("Enter target square: ")
         target = list(move)
-        if(move == "unselect"):
+        if(move == "unselect"): # unselect
             validMoveStorage = []
             unhighlight_board()
             print_board()
-        elif (target[0] in translate and target[1].isdigit()):
+        elif (target[0] in translate and target[1].isdigit()): # if input is valid
             xCordTarget = translate[target[0]]
             yCordTarget = int(target[1])
             proposedMove = [xCordTarget, yCordTarget]
-            if proposedMove in validMoveStorage:
-                square[x(xCordTarget)][y(yCordTarget)] = highlight_red(square[x(xCord)][y(yCord)])
+            if (proposedMove in validMoveStorage):
+                # If move is valid, we need to check if it would risk a mate
+                # TODO add mate prevention
+                if(square[x(xCord)][y(yCord)] == highlight_blue(bpawn) and yCordTarget == 1): # promote pawn
+                    square[x(xCord)][y(yCord)] = bqueen
+                elif(square[x(xCord)][y(yCord)] == highlight_blue(wpawn) and yCordTarget == 8):
+                    square[x(xCord)][y(yCord)] = wqueen
+
+                square[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
                 square[x(xCord)][y(yCord)] = emptySquare
+                # Reset
                 validMoveStorage = []
+                if (playerTurn == 'white'):
+                    playerTurn = 'black'
+                else:
+                    playerTurn = 'white'
                 unhighlight_board()
                 print_board()
+
             else:
                 validMoveStorage = []
                 unhighlight_board()
                 print_board()
                 print("Illegal move.")
+
 
 
 
