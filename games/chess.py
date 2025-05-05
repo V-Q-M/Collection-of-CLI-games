@@ -1,3 +1,4 @@
+import copy
 import re
 
 from utils import helpers
@@ -43,7 +44,12 @@ def y(cord):
 # Builds the board
 square = [[emptySquare] * 8 for _ in range(8)]
 
+def print_square(square):
+    for row in square:
+        print(" ".join(str(item) for item in row))
+
 def startPosition():
+    global fakeSquare
     # White side
     square[x(1)][y(1)] = wrook
     square[x(2)][y(1)] = wknight
@@ -67,6 +73,10 @@ def startPosition():
     square[x(8)][y(8)] = brook
     for i in range(1,9):
         square[x(i)][y(7)] = bpawn
+
+    fakeSquare = copy.deepcopy(square)
+
+fakeSquare = copy.deepcopy(square)
 
 
 # Board layout
@@ -100,11 +110,11 @@ def highlight_blue(text):
 def unhighlight(text):
     return re.sub(r'\033\[[0-9;]*m', '', text)
 
-def unhighlight_board():
-    global square
+def unhighlight_board(board):
+
     for i in range(8):
         for j in range(8):
-            square[i][j] = unhighlight(square[i][j])
+            board[i][j] = unhighlight(board[i][j])
 
 # Stores all valid moves
 validMoveStorage = []
@@ -292,24 +302,24 @@ def checkValidMoves(xCord,yCord):
     selectedPiece = square[x(xCord)][y(yCord)]
     # Check which piece is selected to show the correct movement rules
     if (selectedPiece == bqueen or selectedPiece == wqueen):  # Queen can move all directions
-        print("found queen")
+        #print("found queen")
         vertical(8)
         horizontal(8)
         diagonal(8)
     elif (selectedPiece == brook or selectedPiece == wrook):
-        print("found rook")
+        #print("found rook")
         vertical(8)
         horizontal(8)
     elif (selectedPiece == bbishop or selectedPiece == wbishop):
-        print("found bishop")
+        #print("found bishop")
         diagonal(8)
     elif (selectedPiece == bking or selectedPiece == wking):
-        print("found king")
+        #print("found king")
         vertical(2)
         horizontal(2)
         diagonal(2)
     elif (selectedPiece == bpawn or selectedPiece == wpawn):
-        print("found pawn")
+        #print("found pawn")
         if(yCord == 2 and selectedPiece == wpawn): # Start boost
             verticalPawn(3)
         elif(yCord == 7 and selectedPiece == bpawn):
@@ -317,7 +327,7 @@ def checkValidMoves(xCord,yCord):
         else:
             verticalPawn(2)
     elif (selectedPiece == bknight or selectedPiece == wknight):
-        print("found knight")
+        #print("found knight")
         knightPattern()
 
 
@@ -350,6 +360,35 @@ def selectPiece():
             selectPiece()
 
 
+def riscChecker():
+    global validMoveStorage
+    buffer = []
+    result = []
+
+    # Loop through each row of fakeSquare
+    for y, row in enumerate(fakeSquare):  # `y` is the index of the row (0 to 7)
+        # Loop through each item (square or piece) in the current row
+        for x, item in enumerate(row):  # `x` is the index of the item (0 to 7)
+            if (square[y - 1][x - 1] in whitePieces):
+                validMoveStorage = []  # Reset validMoveStorage for each item
+                unhighlight_board(square)  # Assuming this unhighlights all squares
+                checkValidMoves(x + 1, y + 1)  # Pass the coordinates and item to the function
+
+            # Add the valid moves to the buffer (valid positions as (xPos, yPos) tuples)
+            buffer += validMoveStorage  # validMoveStorage should be populated by checkValidMoves
+
+    # Now populate the result with valid Unicode characters from square
+    for move in buffer:
+        xPos, yPos = move  # Get the coordinates of the valid move
+        # Append the Unicode character from square[yPos][xPos] to result
+        if (square[y - 1][x - 1] in blackPieces):
+            result.append(square[yPos - 1][xPos - 1])  # Adjust for 0-based indexing
+
+    return result  # Return the accumulated valid moves as result
+
+    return result  # Return the accumulated valid moves
+
+
 # Main loop
 def gameLoop():
     gameOver = False
@@ -374,7 +413,7 @@ def gameLoop():
         target = list(move)
         if(move == "unselect"): # unselect
             validMoveStorage = []
-            unhighlight_board()
+            unhighlight_board(square)
             print_board()
         elif (target[0] in translate and target[1].isdigit()): # if input is valid
             xCordTarget = translate[target[0]]
@@ -388,20 +427,28 @@ def gameLoop():
                 elif(square[x(xCord)][y(yCord)] == highlight_blue(wpawn) and yCordTarget == 8):
                     square[x(xCord)][y(yCord)] = wqueen
 
-                square[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
-                square[x(xCord)][y(yCord)] = emptySquare
+                fakeSquare[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
+                fakeSquare[x(xCord)][y(yCord)] = emptySquare
+               # square[x(xCordTarget)][y(yCordTarget)] = square[x(xCord)][y(yCord)]
+                #square[x(xCord)][y(yCord)] = emptySquare
                 # Reset
                 validMoveStorage = []
                 if (playerTurn == 'white'):
                     playerTurn = 'black'
                 else:
                     playerTurn = 'white'
-                unhighlight_board()
+                unhighlight_board(square)
+                unhighlight_board(fakeSquare)
                 print_board()
+
+                print_square(square)
+                print_square(fakeSquare)
+                print(riscChecker())
+
 
             else:
                 validMoveStorage = []
-                unhighlight_board()
+                unhighlight_board(square)
                 print_board()
                 print("Illegal move.")
 
