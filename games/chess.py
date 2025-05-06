@@ -61,7 +61,6 @@ def startPosition():
     square[x(8)][y(1)] = wrook
     for i in range(1,9):
         square[x(i)][y(2)] = wpawn
-    square[x(6)][y(6)] = wpawn
 
     # Black side
     square[x(1)][y(8)] = brook
