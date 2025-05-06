@@ -61,6 +61,7 @@ def startPosition():
     square[x(8)][y(1)] = wrook
     for i in range(1,9):
         square[x(i)][y(2)] = wpawn
+    square[x(6)][y(6)] = wpawn
 
     # Black side
     square[x(1)][y(8)] = brook
@@ -73,7 +74,6 @@ def startPosition():
     square[x(8)][y(8)] = brook
     for i in range(1,9):
         square[x(i)][y(7)] = bpawn
-
     fakeSquare = copy.deepcopy(square)
 
 fakeSquare = copy.deepcopy(square)
@@ -111,7 +111,6 @@ def unhighlight(text):
     return re.sub(r'\033\[[0-9;]*m', '', text)
 
 def unhighlight_board(board):
-
     for i in range(8):
         for j in range(8):
             board[i][j] = unhighlight(board[i][j])
@@ -150,7 +149,7 @@ def checkValidMoves(xCord,yCord, boardInput):
                         break
             # Diagonal captures
             for dx in [-1, 1]:
-                if 0 <= xCord + dx < 8 and yCord - 1 > 0:
+                if 0 <= xCord + dx <= 8 and yCord - 1 > 0:
                     if boardInput[x(xCord + dx)][y(yCord - 1)] in whitePieces:
                         boardInput[x(xCord + dx)][y(yCord - 1)] = highlight_red(boardInput[x(xCord + dx)][y(yCord - 1)])
                         validMoveStorage += [[xCord + dx, yCord - 1]]
@@ -266,7 +265,7 @@ def checkValidMoves(xCord,yCord, boardInput):
                         boardInput[x(xCord + i)][y(yCord - i)] = highlight_red(boardInput[x(xCord + i)][y(yCord - i)])
                         validMoveStorage += [[xCord + i,yCord - i]]
                     break
-                boardInput[x(xCord + i)][y(yCord - i)] = highlight_red(squboardInputare[x(xCord + i)][y(yCord - i)])
+                boardInput[x(xCord + i)][y(yCord - i)] = highlight_red(boardInput[x(xCord + i)][y(yCord - i)])
                 validMoveStorage += [[xCord + i,yCord - i]]
 
     def knightPattern():
@@ -346,9 +345,9 @@ def selectPiece():
                 checkValidMoves(xCord, yCord, square)  # Shows the possible moves in red
                 square[x(xCord)][y(yCord)] = highlight_blue(unhighlight(square[x(xCord)][y(yCord)]))  # Selected piece is blue
                 print_board()
-                print(xCord)
-                print(yCord)
-                print(validMoveStorage)
+                #print(xCord)
+                #print(yCord)
+                #print(validMoveStorage)
             else:
                 helpers.clear_screen()
                 print_board()
@@ -363,27 +362,32 @@ def selectPiece():
 
 def riscChecker():
     global validMoveStorage
-    buffer = []
     result = []
 
-    # Loop through each row of fakeSquare
-    for y, row in enumerate(fakeSquare):  # y is the index of the row (0 to 7)
-        # Loop through each item (square or piece) in the current row
-        for x, item in enumerate(row):  # x is the index of the item (0 to 7)
-            if (fakeSquare[y - 1][x - 1] in blackPieces):
-                validMoveStorage = []  # Reset validMoveStorage for each item
-                unhighlight_board(fakeSquare)  # Assuming this unhighlights all squares
-                checkValidMoves(x + 1, y + 1, fakeSquare)  # Pass the coordinates and item to the function
+    # Store all black attacks in a list of (xPos, yPos) moves
+    all_black_moves = []
 
-            # Add the valid moves to the buffer (valid positions as (xPos, yPos) tuples)
-            buffer += validMoveStorage  # validMoveStorage should be populated by checkValidMoves
+    for y, row in enumerate(fakeSquare):  # y: 0 to 7
+        for x, piece in enumerate(row):   # x: 0 to 7
+            if piece in blackPieces:
+                validMoveStorage = []  # Reset
+                unhighlight_board(fakeSquare)
+                checkValidMoves(x + 1, y + 1, fakeSquare)  # Assuming 1-based coords
 
-    # Now populate the result with valid Unicode characters from square
-    for move in buffer:
-        xPos, yPos = move  # Get the coordinates of the valid move
-        # Append the Unicode character from square[yPos][xPos] to result
-        result.append(fakeSquare[yPos - 1][xPos - 1])  # Adjust for 0-based indexing
-    return result
+                all_black_moves += validMoveStorage  # Each move is (xPos, yPos)
+
+    # Now check what white pieces are at those black attack positions
+    for move in all_black_moves:
+        xPos, yPos = move  # Still 1-based
+        board_x = xPos - 1
+        board_y = yPos - 1
+
+        if 0 <= board_x < 8 and 0 <= board_y < 8:
+            target = fakeSquare[board_y][board_x]
+            if target in whitePieces:
+                result.append(target)
+
+    return result  # Unicode characters of threatened white pieces
 
 
 
@@ -439,9 +443,9 @@ def gameLoop():
                 unhighlight_board(fakeSquare)
                 print_board()
 
-                print_square(square)
-                print_square(fakeSquare)
-                print(riscChecker())
+                #print_square(square)
+                #print_square(fakeSquare)
+                #print(riscChecker())
 
 
             else:
