@@ -488,4 +488,4 @@ def startGame():
             helpers.clear_screen()
             print("Please enter something valid...")
 
-startGame()
+#startGame()
